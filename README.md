@@ -1,59 +1,160 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Khushali Savaliya — Laravel Portfolio Setup Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Folder Structure
+```
+your-laravel-project/
+├── public/
+│   ├── css/
+│   │   └── portfolio.css          ← Copy here
+│   └── js/
+│       └── portfolio.js           ← Copy here
+├── resources/
+│   └── views/
+│       ├── layouts/
+│       │   └── app.blade.php      ← Copy here
+│       ├── partials/
+│       │   ├── navbar.blade.php   ← Copy here
+│       │   └── footer.blade.php   ← Copy here
+│       └── home.blade.php         ← Copy here
+└── routes/
+    └── web.php                    ← Update this
+```
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✅ Step-by-Step Setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Step 1 — Fresh Laravel Project
+If you haven't already:
+```bash
+composer create-project laravel/laravel khushali-portfolio
+cd khushali-portfolio
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Step 2 — Copy the Files
+Copy each file from this package into the matching path in your Laravel project (see folder structure above).
 
-## Learning Laravel
+### Step 3 — Update `routes/web.php`
+Replace (or update) your `routes/web.php` with the provided one, or just add:
+```php
+Route::get('/', function () {
+    return view('home');
+})->name('home');
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Step 4 — No NPM/Vite Required
+This portfolio uses **zero build steps**. All CSS and JS are in `public/` and referenced via `asset()` helpers. No Vite, no Mix needed.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+> If you have Vite running and see errors, either stop it or remove the `@vite(...)` directives from any existing blade files.
 
-## Laravel Sponsors
+### Step 5 — Serve the Project
+```bash
+php artisan serve
+```
+Visit `http://localhost:8000` — your portfolio is live!
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🎨 Customisation Guide
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Change Accent Color
+In `public/css/portfolio.css`, find the `:root` block and change:
+```css
+--accent: #7C3AED;        /* Main purple — change to any color */
+--accent-light: #A78BFA;  /* Lighter tint */
+--accent-2: #06B6D4;      /* Gradient secondary (cyan) */
+```
 
-## Contributing
+### Add Your Photo
+Replace the avatar initials block in `home.blade.php`:
+```html
+<div class="avatar-inner">
+    {{-- Replace this: --}}
+    <span class="avatar-initials">KS</span>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    {{-- With this: --}}
+    <img src="{{ asset('images/khushali.jpg') }}" alt="Khushali Savaliya"
+         style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+</div>
+```
+Then place your photo at `public/images/khushali.jpg`.
 
-## Code of Conduct
+### Add a Resume Download Button
+In `home.blade.php`, inside `.hero-actions`:
+```html
+<a href="{{ asset('files/khushali-resume.pdf') }}" download class="btn btn-ghost">
+    <i class="fas fa-download"></i> Download CV
+</a>
+```
+Place your PDF at `public/files/khushali-resume.pdf`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Update Contact Form (Backend)
+When ready to make the form functional:
 
-## Security Vulnerabilities
+1. Create `app/Http/Controllers/ContactController.php`:
+```php
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+class ContactController extends Controller
+{
+    public function send(Request $request)
+    {
+        $request->validate([
+            'name'    => 'required|string|max:100',
+            'email'   => 'required|email',
+            'subject' => 'required|string|max:200',
+            'message' => 'required|string',
+        ]);
 
-## License
+        // Mail::to('khushalisavaliya28@gmail.com')->send(new ContactMail($request->all()));
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+        return response()->json(['success' => true]);
+    }
+}
+```
+
+2. Uncomment the route in `routes/web.php`.
+
+---
+
+## 🌗 Dark / Light Theme
+- Default is **dark mode**.
+- Click the sun/moon icon in the navbar to toggle.
+- Preference is saved in `localStorage` — persists on refresh.
+
+## 📱 Responsive Breakpoints
+| Breakpoint | Layout |
+|---|---|
+| `> 1024px` | Full two-column layouts |
+| `768px – 1024px` | Adjusted gaps, single contact column |
+| `< 768px` | Mobile: hamburger menu, single column everything |
+| `< 480px` | Extra compact hero, smaller text |
+
+## ✨ Animations Included
+- **Cursor** — Custom trailing dot cursor (desktop only)
+- **Reveal** — Elements fade+slide in on scroll (IntersectionObserver)
+- **Count-up** — Hero stats count up when visible
+- **Skill bars** — Progress bars animate in on scroll
+- **Ticker** — Role text cycles through 4 values
+- **Orbs** — Floating gradient blobs in hero background
+- **Avatar orbit** — Tech pills orbit the avatar
+- **Project filters** — Click to filter projects by category
+- **Floating cards** — Gently float up/down
+
+---
+
+## 🔮 Future Backend Steps (Dynamic Content)
+When you're ready to make it dynamic:
+
+1. **Database migrations** — Create tables: `projects`, `experiences`, `skills`, `contact_messages`
+2. **Models & Controllers** — `Project`, `Experience`, `Skill`
+3. **Admin panel** — Use Laravel Filament or build a custom blade admin
+4. **Pass data to view** — In `web.php`: `return view('home', compact('projects', 'experiences'))`
+5. **Blade loops** — Replace static project cards with `@foreach($projects as $project)`
+
+---
+
+Built with ❤️ — Syne + DM Sans + JetBrains Mono fonts, no build tools required.
